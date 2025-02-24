@@ -9,7 +9,35 @@ pyzmq library for ZeroMQ
 To install the required dependencies, you can run:
 
     bash pip install pyzmq
+
+Example code- The array is trimmed for brevity:
+
+    import zmq
+    import random
+
+    game_tips = [
+    "You can always go back to your full list of games by clicking on the Home Button!",
+    ]
+
+    def start_publisher():
+        context = zmq.Context()
+        socket = context.socket(zmq.REP)
+
+        socket.bind("tcp://*:5556")
+        print("Publisher started on port 5556...")
     
+        while True:
+            num_tips = int(socket.recv_string())  # Receive the number of tips requested
+            print(f"Received request for {num_tips} tips")
+
+            selected_tips = random.sample(game_tips, num_tips)  # Select unique tips
+
+            response = "\n".join(selected_tips)
+            socket.send_string(response)
+
+    if __name__ == "__main__":
+        start_publisher()
+        
 How to Run
 1. Run the Publisher Service
 In your terminal, navigate to the directory where tips.py is located and run:
