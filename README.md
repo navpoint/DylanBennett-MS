@@ -1,55 +1,49 @@
 # DylanBennett-MS
 Dylan Bennett's Microservice
 
-Tips Publisher Service
-This service is a ZeroMQ Publisher that delivers random tips about video games. It runs on port 5556 and can be used by a ZeroMQ Subscriber to receive game-related tips. The tips cover both gameplay advice and library navigation guidance.
+Tips Publisher Service - The Tips Publisher service is a ZeroMQ driven feature of Dylan's Video Game library. Tips will allow a user to request a number of tips on how to easier use the library service. Some tips may also give suggestions on the types of video games to play.
 
-Features
-Game Tips: Delivers random tips about gameplay and game library navigation.
-ZeroMQ: Uses the ZeroMQ PUB/SUB messaging pattern for communication.
-Dynamic Interaction: The subscriber can request a specified number of tips at a time.
 Requirements
 Python 3.x
 pyzmq library for ZeroMQ
 To install the required dependencies, you can run:
 
-bash
-Copy
-pip install pyzmq
+    bash pip install pyzmq
+    
 How to Run
 1. Run the Publisher Service
 In your terminal, navigate to the directory where tips.py is located and run:
 
-bash
-Copy
-python tips.py
-This will start the publisher service on port 5556, and it will continuously send random game tips. The service will run indefinitely, sending a tip every second.
+    bash python tips.py
+   
+This will start the publisher service on port 5556, and whenever it receives a request on that port with an integer parameter it will return that number of tips.
 
-2. Request Tips with a Subscriber
-A ZeroMQ Subscriber (like the one we built earlier) can request a specific number of tips by sending a request to the publisher. The subscriber receives and displays the tips.
+3. Request Tips with a Subscriber
+A ZMQ based subscriber can send a number to the service and receive that number of tips.
 
-Example Subscriber:
-python
-Copy
-import zmq
+Example Subscriber code:
+    
+    python import zmq
 
-def request_tips():
-    num_tips = int(input("Enter the number of tips you want: "))
+    def request_tips():
+        num_tips = int(input("Enter the number of tips you want: "))
     
-    context = zmq.Context()
-    socket = context.socket(zmq.REQ)  # Use REQ for request
+        context = zmq.Context()
+        socket = context.socket(zmq.REQ)  # Use REQ for request
     
-    socket.connect("tcp://localhost:5556")
+        socket.connect("tcp://localhost:5556")
     
-    socket.send_string(str(num_tips))  # Send the number of tips
+        socket.send_string(str(num_tips))  # Send the number of tips
     
-    response = socket.recv_string()  # Receive the response (tips)
+        response = socket.recv_string()  # Receive the response (tips)
     
-    print("\nReceived tips:")
-    print(response)
+        print("\nReceived tips:")
+        print(response)
 
-if __name__ == "__main__":
-    request_tips()
+    if __name__ == "__main__":
+        request_tips()
+
+        
 How It Works:
 The subscriber asks for a certain number of tips (e.g., "How many tips do you want?").
 The subscriber sends the request to the publisher via ZeroMQ.
@@ -58,18 +52,16 @@ The subscriber receives and displays the tips.
 Running the Subscriber:
 To run the subscriber, execute the following:
 
-bash
-Copy
-python subscriber.py
-Example Interaction:
-kotlin
-Copy
-Enter the number of tips you want: 3
+    bash python subscriber.py
+    Enter the number of tips you want: 3
 
-Received tips:
-In-person multiplayer gives you the best performance and connection stability.
-Multiplayer modes are more fun with friends; consider LAN for faster performance.
-Always check the difficulty setting before starting a new game to match your skill level.
+Example Output:
+
+    Received tips:
+    In-person multiplayer gives you the best performance and connection stability.
+    Multiplayer modes are more fun with friends; consider LAN for faster performance.
+    Always check the difficulty setting before starting a new game to match your skill level.
+    
 Tips List
 The service sends a selection of tips from the following categories:
 
