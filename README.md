@@ -22,33 +22,39 @@ This will start the publisher service on port 5556, and whenever it receives a r
 A ZMQ based subscriber can send a number to the service and receive that number of tips.
 
 Example Subscriber code:
-    
-    python import zmq
+
+    import zmq
 
     def request_tips():
-        num_tips = int(input("Enter the number of tips you want: "))
-    
         context = zmq.Context()
         socket = context.socket(zmq.REQ)  # Use REQ for request
+
+    socket.connect("tcp://localhost:5556")
     
-        socket.connect("tcp://localhost:5556")
-    
-        socket.send_string(str(num_tips))  # Send the number of tips
-    
-        response = socket.recv_string()  # Receive the response (tips)
-    
+    while True:
+        num_tips = int(input("Enter the number of tips you want (0 to exit): "))
+
+        if num_tips == 0:
+            print("Exiting the program.")
+            break
+
+        socket.send_string(str(num_tips))
+
+        response = socket.recv_string()
+        
         print("\nReceived tips:")
         print(response)
 
     if __name__ == "__main__":
         request_tips()
 
-        
+
 How It Works:
 The subscriber asks for a certain number of tips (e.g., "How many tips do you want?").
 The subscriber sends the request to the publisher via ZeroMQ.
 The publisher sends back the requested number of random tips.
 The subscriber receives and displays the tips.
+
 Running the Subscriber:
 To run the subscriber, execute the following:
 
@@ -73,3 +79,6 @@ Gameplay Tips:
 Use the map frequently in open-world games.
 Multiplayer modes are more enjoyable with friends (consider LAN for performance).
 Explore hidden areas to find easter eggs.
+
+![image](https://github.com/user-attachments/assets/8791883a-64a8-48cd-b219-2eb9ea0a581b)
+
